@@ -20,6 +20,6 @@
  (name eva)
  (synopsis "An EVM Assembler")
  (description "An EVM assembler.")
- (depends ocaml dune menhir zarith)
+ (depends ocaml dune menhir zarith (alcotest :with-test))
  (tags
   (assembler evm ethereum)))

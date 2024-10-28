@@ -8,5 +8,5 @@ type expr =
   | Div of expr * expr
 
 type arg = Immediate of int | Expr of expr
-type code = Inst of string * arg list | Data of string
-type t = { labels : (string * int) list; code : code array }
+type code = Label of string | Inst of string * arg list | Data of string
+type t = code list

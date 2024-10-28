@@ -1,16 +1,3 @@
-%{
-
-  type r = { l : (string * int) list; c : Ast.code list; n : int }
-
-  let empty = { l = []; c = []; n = 0 }
-  let add_label r l = { r with l = (l, r.n) :: r.l }
-  let add_code r c = { r with c = c :: r.c; n = r.n + 1 }
-
-  let to_ast { l; c; n = _ } =
-    Ast.{ labels = List.rev l; code = List.rev c |> Array.of_list }
-
-%}
-
 %token <string> IDENT
 %token <Z.t> INT
 %token <int> IMMEDIATE
@@ -29,19 +16,19 @@
 %left TIMES SLASH
 %nonassoc unary
 
-%start <Ast.t> prog
+%start <Ast.t> main
 
 %%
 
-prog:
-  | r = rprog; EOF { to_ast r }
+main:
+  | r = rmain; EOF { List.rev r }
 
-rprog:
-  |                                      { empty }
-  | r = rprog; EOL                       { r }
-  | r = rprog; l = LABEL; EOL            { add_label r l }
-  | r = rprog; i = IDENT; a = rargs; EOL { add_code r (Ast.Inst (i, List.rev a)) }
-  | r = rprog; DATA; s = STRING; EOL     { add_code r (Ast.Data s) }
+rmain:
+  |                                      { [] }
+  | r = rmain; EOL                       { r }
+  | r = rmain; l = LABEL; EOL            { Ast.(Label l) :: r }
+  | r = rmain; i = IDENT; a = rargs; EOL { Ast.(Inst (i, List.rev a)) :: r }
+  | r = rmain; DATA; s = STRING; EOL     { Ast.(Data s) :: r }
 
 rargs:
   |                    { [] }

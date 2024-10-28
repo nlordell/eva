@@ -13,7 +13,8 @@ let newline = '\r' | '\n' | "\r\n"
 
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '0'-'9' '_']*
 
-let int = ("0b" | "0o" | "0x") ['0'-'9' 'a'-'f' 'A'-'F']+
+let digit = ['0'-'9' 'a'-'f' 'A'-'F']
+let int = ("0b" | "0o" | "0x")? digit+
 let immediate = '%' ['0'-'9']+
 
 rule read =
@@ -33,7 +34,7 @@ rule read =
   | '-'       { MINUS }
   | '*'       { TIMES }
   | '/'       { SLASH }
-  | _         { failwith ("unexepected character" ^ Lexing.lexeme lexbuf) }
+  | _         { failwith ("unexepected character " ^ Lexing.lexeme lexbuf) }
   | eof       { EOF }
 
 and read_string buf =
@@ -44,7 +45,7 @@ and read_string buf =
   | '\\' 'n'  { Buffer.add_char buf '\n'; read_string buf lexbuf }
   | '\\' 'r'  { Buffer.add_char buf '\r'; read_string buf lexbuf }
   | '\\' 't'  { Buffer.add_char buf '\t'; read_string buf lexbuf }
-  | "\\x" ['0'-'9'] ['0'-'9']
+  | "\\x" digit digit
     {
       let i = int_of_string ("0" ^ lexeme_1 lexbuf) in
       Buffer.add_char buf (Char.chr i);
