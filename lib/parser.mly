@@ -18,17 +18,28 @@
 
 %start <Ast.t> main
 
+%{
+
+  let cons_opt x xs = match x with
+    | None -> xs
+    | Some x -> x :: xs
+
+%}
+
 %%
 
 main:
   | r = rmain; EOF { List.rev r }
 
 rmain:
-  |                                      { [] }
-  | r = rmain; EOL                       { r }
-  | r = rmain; l = LABEL; EOL            { Ast.(Label l) :: r }
-  | r = rmain; i = IDENT; a = rargs; EOL { Ast.(Inst (i, List.rev a)) :: r }
-  | r = rmain; DATA; s = STRING; EOL     { Ast.(Data s) :: r }
+  | s = stmt                 { cons_opt s [] }
+  | r = rmain; EOL; s = stmt { cons_opt s r }
+
+stmt:
+  |                      { None }
+  | l = LABEL            { Some Ast.(Label l) }
+  | i = IDENT; a = rargs { Some Ast.(Inst (i, List.rev a)) }
+  | DATA; s = STRING     { Some Ast.(Data s) }
 
 rargs:
   |                    { [] }

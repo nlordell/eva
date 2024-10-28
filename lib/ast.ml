@@ -8,5 +8,5 @@ type expr =
   | Div of expr * expr
 
 type arg = Immediate of int | Expr of expr
-type code = Label of string | Inst of string * arg list | Data of string
-type t = code list
+type stmt = Label of string | Inst of string * arg list | Data of string
+type t = stmt list

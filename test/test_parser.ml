@@ -36,7 +36,7 @@ let ast =
       | Expr e, Expr f -> E.eq e f
       | _ -> false
   end in
-  let module C = struct
+  let module S = struct
     let args =
       let arg = Alcotest.testable A.pp A.eq in
       Alcotest.list arg
@@ -56,8 +56,8 @@ let ast =
       | Data s, Data t -> String.equal s t
       | _ -> false
   end in
-  let code = Alcotest.testable C.pp C.eq in
-  Alcotest.list code
+  let stmt = Alcotest.testable S.pp S.eq in
+  Alcotest.list stmt
 
 let test_parse () =
   Alcotest.(check ast)
@@ -80,6 +80,8 @@ let test_parse () =
           push 32
           return
         :end
+
+          # some extra metadata to the init code...
           .data "some metadata \x01\x02\x03\xff"
        |})
     Eva.Ast.
@@ -126,9 +128,36 @@ let test_expr () =
             ] );
       ]
 
+let test_empty () = Alcotest.(check ast) "equals" (parse "") []
+
+let test_missing_newline () =
+  Alcotest.(check ast) "equals" (parse ":label") Eva.Ast.[ Label "label" ]
+
+let test_empty_spaces () =
+  Alcotest.(check ast)
+    "equals"
+    (parse {|
+
+
+
+      :a
+
+
+      :b
+
+
+
+
+
+    |})
+    Eva.Ast.[ Label "a"; Label "b" ]
+
 let tests =
   Alcotest.
     [
       test_case "Parse" `Quick test_parse;
       test_case "Complex expression" `Quick test_expr;
+      test_case "Empty" `Quick test_empty;
+      test_case "Missing newline" `Quick test_missing_newline;
+      test_case "Empty spaces" `Quick test_empty_spaces;
     ]

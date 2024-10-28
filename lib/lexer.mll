@@ -21,6 +21,7 @@ rule read =
   parse
   | white     { read lexbuf }
   | newline   { EOL }
+  | '#'       { read_comment lexbuf }
   | ident     { IDENT (Lexing.lexeme lexbuf) }
   | int       { INT (Z.of_string (Lexing.lexeme lexbuf)) }
   | immediate { IMMEDIATE (int_of_string (lexeme_1 lexbuf)) }
@@ -58,3 +59,9 @@ and read_string buf =
     }
   | _ { failwith ("Illegal string character: " ^ Lexing.lexeme lexbuf) }
   | eof { failwith ("String is not terminated") }
+
+and read_comment =
+  parse
+  | newline { EOL }
+  | _       { read_comment lexbuf }
+  | eof     { EOF }
