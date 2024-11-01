@@ -159,6 +159,10 @@ let max_size = function
   | Code _ -> 1
   | Push (n, _) -> 1 + Option.value n ~default:32
 
+let min_size = function
+  | Code _ -> 1
+  | Push (n, _) -> 1 + Option.value n ~default:0
+
 let size refs = function
   | Code _ -> 1
   | Push (n, e) ->

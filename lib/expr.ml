@@ -1,6 +1,7 @@
 module Refs = Map.Make (String)
 
 exception Undefined_reference of string
+exception Divide_by_zero
 
 let rec eval refs =
   let open Ast in
@@ -30,4 +31,5 @@ let rec eval refs =
   | Div (e, f) ->
       let e = eval refs e in
       let f = eval refs f in
+      if Z.equal f Z.zero then raise Divide_by_zero;
       Z.div e f
