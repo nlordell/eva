@@ -33,18 +33,19 @@ let main () =
         |> Eva.Codegen.emit)
   in
 
-  let output_name =
+  let output =
     match !output with
-    | Some s -> s
-    | None -> Filename.remove_extension input_name ^ ".bin"
+    | Some "-" -> stdout
+    | Some s -> open_out s
+    | None -> Filename.remove_extension input_name ^ ".bin" |> open_out
   in
-  let output = open_out output_name in
 
   Fun.protect
     ~finally:(fun () -> close_out_noerr output)
     (fun () ->
-      if !hex then
+      if !hex || output == stdout then
         String.iter (fun c -> Printf.fprintf output "%02x" (Char.code c)) code
-      else Out_channel.output_string output code)
+      else output_string output code;
+      if output == stdout then output_char output '\n')
 
 let () = main ()
