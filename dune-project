@@ -1,4 +1,4 @@
-(lang dune 3.16)
+(lang dune 3.17)
 (using menhir 2.0)
 
 (name eva)
@@ -6,7 +6,7 @@
 (generate_opam_files true)
 
 (source
- (github nlordell/eva))
+ (codeberg nlordell/eva))
 
 (authors "Nicholas Rodrigues Lordello")
 

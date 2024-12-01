@@ -6,12 +6,12 @@ maintainer: ["Nicholas Rodrigues Lordello"]
 authors: ["Nicholas Rodrigues Lordello"]
 license: "GPL-3.0-only"
 tags: ["assembler" "evm" "ethereum"]
-homepage: "https://github.com/nlordell/eva"
+homepage: "https://codeberg.org/nlordell/eva"
 doc: "https://codeberg.org/nlordell/eva"
-bug-reports: "https://github.com/nlordell/eva/issues"
+bug-reports: "https://codeberg.org/nlordell/eva/issues"
 depends: [
   "ocaml"
-  "dune" {>= "3.16"}
+  "dune" {>= "3.17"}
   "menhir"
   "zarith"
   "alcotest" {with-test}
@@ -31,4 +31,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/nlordell/eva.git"
+dev-repo: "git+https://codeberg.org/nlordell/eva.git"
